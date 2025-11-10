@@ -1,7 +1,7 @@
 const express = require('express')
 const app = express()
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const port = 3000
 
 
@@ -35,21 +35,42 @@ async function run() {
         res.send(result)
     })
 
- app.get("/product", async (req, res) => {
-  try {
-    const search = req.query.search || ""; 
-    const result = await reviewcollection
-      .find({ name: { $regex: search, $options: "i" } }) 
-      .sort({ date: -1 }) 
-      .toArray();
+      app.get("/review",async(req,res)=>{
+        const review=  reviewcollection.find();
+        const result= await review.toArray();
+        res.send(result)
+    })
 
-    res.send(result);
-  } catch (err) {
-    res.status(500).send({ message: err.message });
-  }
-});
+    app.get('/myreview',async(req,res)=>{
+      const email=req.query.email;
+      const result=await reviewcollection.find({userEmail: email}).toArray();
+      res.send(result)
+    })
 
-    app.post('/product' ,async(req,res)=>{
+    app.get("/review/:id" ,async(req,res)=>{
+      const id=req.params.id;
+      const result=await reviewcollection.findOne({_id:new ObjectId(id)})
+      res.send(result)
+    })
+
+    app.delete("/review/:id",async(req,res)=>{
+      const id=req.params.id;
+      const result=await reviewcollection.deleteOne({ _id: new ObjectId(id) })
+      res.send(result)
+    })
+
+
+    app.put('/review/:id' ,async(req,res)=>{
+      const id =req.params.id;
+      const updatedata=req.body;
+      const result=await reviewcollection.updateOne(
+        {_id: new ObjectId(id)},
+      {$set: updatedata}
+    )
+    res.send(result)
+    })
+
+    app.post('/review' ,async(req,res)=>{
       const product=req.body;
       const result=await reviewcollection.insertOne(product)
       res.send(result)
