@@ -21,14 +21,14 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // await client.connect();
+    await client.connect();
 
     const db = client.db("FoodNetwork");
     const reviewcollection = db.collection('products')
     const foodlovercollection = db.collection('foodlovers')
     const favoritecollection = db.collection('favorite')
 
-    // Favorites
+  
     app.get("/favorite", async (req, res) => {
       try {
         const favorite = favoritecollection.find()
