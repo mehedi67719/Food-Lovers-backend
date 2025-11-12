@@ -21,7 +21,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    await client.connect();
+    // await client.connect();
 
     const db = client.db("FoodNetwork");
     const reviewcollection = db.collection('products')
@@ -205,4 +205,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-module.exports = app;
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+// module.exports = app;
